@@ -170,7 +170,8 @@ while True:
         print("Team successfuly built!\n")
         print(f"Team {len(saved_teams)}")
         for index, teammember in enumerate(poketeam, start=1):
-            print(f"{index}: {teammember}")      
+            print(f"{index}: {teammember}")
+
     elif choice == 'view':
         if not saved_teams:
             print("There are no teams available!")
@@ -181,5 +182,50 @@ while True:
             for j in range(len(team)):
                 
                 print(f"{(j+1)}: {team[j]}", end=" ")
-            print()    
+            print() 
+
+    elif choice == 'ai':
+
+        api_key = input("Enter your Groq API key: ").strip()
+
+        with open(key_path, "w") as f:
+            f.write(api_key)
+        print("API key saved!")
+
+    elif choice == 'clear':
+
+        saved_teams = []
+
+        with open(file_path, "w") as f:
+            json.dump(saved_teams, f)
+
+        print("Team sheets have been cleared!")
+
+    elif choice == 'analyze':
+        if not api_key:
+            print("No API key set! Select 'AI' from the main menu to add one.")
+        elif not saved_teams:
+            print("No teams available! Select 'create' from the main menu to build one.")
+        else:
+            print("Pokemon teams available:")
+            for i, team in enumerate(saved_teams, start=1):
+                print(f"\nTeam {i}")
+                for j in range(len(team)):
+                    print(f"{(j+1)}: {team[j]}", end=" ")
+            print()
+
+            while True:
+                pick = input("\nEnter the team number to analyze: ").strip()
+                if pick.isdigit() and 1 <= int(pick) <= len(saved_teams):
+                    break
+                print("Invalid team number! Try again.")
+
+            chosen_team = saved_teams[int(pick) - 1]
+            print(f"\nAnalyzing Team {pick}...\n")
+            try:
+                stream_team_analysis(chosen_team, api_key)
+            except urllib.error.HTTPError as e:
+                print(f"\nHTTP {e.code}: {e.read().decode()}")   # Prints error message as is for debugging.
+    else:
+        print("Invalid option! Try again.")               
     print()
