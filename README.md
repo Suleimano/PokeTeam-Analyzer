@@ -1,6 +1,4 @@
-# PokeTeam Analyzer
-
- **v1.0** 
+# PokeTeam Analyzer V1
 
 PokeTeam Analyzer lets you build competitive pokemon teams, save them locally, and get an AI generated competitive analysis of your team composition. Pokemon data is pulled from [PokeAPI](https://pokeapi.co/) with in-memory caching. Groq's API is used for competitive analysis.
 
