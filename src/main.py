@@ -16,7 +16,45 @@ def get_pokemon(query):
         raise                    # raises any error which is NOT from an invalid pokemon 
 
 
+def stream_team_analysis(team, api_key):
+    prompt = (
+        "You are a competitive Pokémon analyst. Given this team, briefly highlight its strengths "
+        "(if any notable), identify its competitive weaknesses, consider competitive viability, "
+        f"and suggest replacements if needed:\nTeam: {', '.join(team)}"
+    )
 
+    payload = json.dumps({
+        "model": "openai/gpt-oss-120b",                  # <-- Best free model available
+        "messages": [{"role": "user", "content": prompt}],
+        "stream": True,
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        "https://api.groq.com/openai/v1/chat/completions",   # Groq API link
+        data=payload,
+        headers={
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {api_key}",             # Groq key
+            "User-Agent": "PokeTeamAnalyzer/0.1",
+        },
+    )
+
+    with urllib.request.urlopen(req) as r:
+        for line in r:
+            line = line.decode("utf-8").strip()
+            if not line.startswith("data: "):
+                continue
+            data = line[6:]
+            if data == "[DONE]":                          # This is sent by the API to end the message.
+                break
+            chunk = json.loads(data)
+            try:
+                text = chunk["choices"][0]["delta"]["content"]
+            except (KeyError, IndexError):
+                continue
+            if text:
+                print(text, end="", flush=True)
+    print()
 
 
 
