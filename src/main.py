@@ -1,6 +1,6 @@
-import urllib.request, urllib.error, json
+import functools, urllib.request, urllib.error, json
 
-
+@functools.lru_cache(maxsize=None)
 def get_pokemon(query):
     query = str(query).strip().lower()
     req = urllib.request.Request(
