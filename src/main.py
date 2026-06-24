@@ -1,4 +1,4 @@
-import functools, urllib.request, urllib.error, json
+import functools, urllib.request, urllib.error, json, os
 
 @functools.lru_cache(maxsize=None)
 def get_pokemon(query):
@@ -57,7 +57,21 @@ def stream_team_analysis(team, api_key):
     print()
 
 
+file_path = "src/data/teams.json"
 
+if os.path.exists(file_path):
+    with open(file_path, "r") as f:
+        saved_teams = json.load(f)
+else:
+    saved_teams = []
+
+key_path = "src/data/api_key.txt"
+
+if os.path.exists(key_path):
+    with open(key_path, "r") as f:
+        api_key = f.read().strip()
+else:
+    api_key = None
   
 
 
