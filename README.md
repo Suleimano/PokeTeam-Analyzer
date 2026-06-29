@@ -1,12 +1,16 @@
-# PokeTeam Analyzer V1
+# PokeTeam Analyzer V1.1
 
 PokeTeam Analyzer lets you build competitive pokemon teams, save them locally, and get an AI generated competitive analysis of your team composition. Pokemon data is pulled from [PokeAPI](https://pokeapi.co/) with in-memory caching. Groq's API is used for competitive analysis.
 
+# What's new
+- **Held-items** can now be set in team creation
+- **Competitive formats** can now be set in team analysis
+
 ## Features
 
-- **Build teams** of 6 pokemon, by name or by PokeDex number
+- **Build teams** of 6 pokemon, by name or by PokeDex number, including held-items
 - **Save and view** teamsheets
-- **AI team analysis** streamed token-by-token — covering strengths, weaknesses, competitive viability, and suggested replacements
+- **AI team analysis** streamed token-by-token — covering strengths, weaknesses, competitive viability, and suggested replacements for your chosen competitive format
 - **Zero third-party dependencies** — runs on the Python standard library alone
 
 ## How it works
