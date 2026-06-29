@@ -16,11 +16,13 @@ def get_pokemon(query):
         raise                    # raises any error which is NOT from an invalid pokemon 
 
 
-def stream_team_analysis(team, api_key):
+def stream_team_analysis(team, format, api_key):
+    if format != "":
+        formatmessage = f"The competitive format being used is {format}" 
     prompt = (
         "You are a competitive Pokémon analyst. Given this team, briefly highlight its strengths "
         "(if any notable), identify its competitive weaknesses, consider competitive viability, "
-        f"and suggest replacements if needed:\nTeam: {', '.join(team)}"
+        f"and suggest replacements if needed:\nTeam: {team}. {formatmessage}"
     )
 
     payload = json.dumps({
@@ -90,14 +92,20 @@ while True:
         while count <= 6:
 
             query = input(f"{count}: ")
-            
+            helditem = input("Held item (press enter to skip): ")
+            if helditem == "":
+                helditem = "N/A"
+
             pokemon = get_pokemon(query)
 
             if pokemon is not None:
                 if pokemon['name'] not in poketeam:
 
-                    poketeam.append(pokemon['name'])
-                    print(f"{pokemon['name']} has been added to the team!")
+                    newpokemon = {"name": pokemon['name'], "held-item": helditem}
+                    poketeam.append(newpokemon)
+
+                    print(f"{pokemon['name']} with held-item {helditem} has been added to the team!")
+
                     count += 1
 
                 else:
@@ -165,9 +173,10 @@ while True:
                 print("Invalid team number! Try again.")
 
             chosen_team = saved_teams[int(pick) - 1]
-            print(f"\nAnalyzing Team {pick}...\n")
+            format = input("Enter the competitive format (press enter to skip):")
+            print(f"\nAnalyzing Team \n{pick}\n...\n")
             try:
-                stream_team_analysis(chosen_team, api_key)
+                stream_team_analysis(chosen_team, format, api_key)
             except urllib.error.HTTPError as e:
                 print(f"\nHTTP {e.code}: {e.read().decode()}")   # Prints error message as is for debugging.
     else:
